@@ -1,0 +1,51 @@
+<% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/zf-5.5.2/jq-2.2.4/dt-1.10.13/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/zf-5.5.2/jq-2.2.4/dt-1.10.13/datatables.min.js"></script>
+<script type="text/javascript" defer>
+$(document).ready(function() {
+  $('#ventas-table').dataTable({
+
+          "sPaginationType": "full_numbers",
+          
+          retrieve: true
+
+          
+
+        });    
+  
+});
+</script>
+<center>
+<table id="ventas-table">
+  <thead>
+    <tr>
+      
+      <th>Monto</th>
+      <th>Fecha</th>
+      <th>Opciones</th>
+    </tr>
+  </thead>
+  <% @ventas.each do |venta| %>
+      <tr>
+        <td><%= venta.monto %></td>
+        <td><%= venta.created_at.to_formatted_s(:db) %></td>     
+        <td><%= link_to 'show', venta %></td>
+       
+      </tr>
+    <% end %>
+  
+</table>
+
+<br>
+
+
+</center>
+
+
+
+
+
+
+<% elsif current_user and current_user.email != "jonatan.orc@gmail.com" %>
+<p>Acceso no permitido</p>
+<% end %>

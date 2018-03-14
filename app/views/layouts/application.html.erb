@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scat</title>
+    <%= csrf_meta_tags %>
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+  <body>
+  
+    <!--<center><p class="notice"><%= notice %></p>
+    <p class="alert"><%= alert %></p> </center>-->
+
+  <!--SI EL USUARIO ES ADMINISTRADOR-->
+
+<% flash.each do |key, value| %>
+        <div class="alert_alert-<%= key %>"><%= value %></div>
+      <% end %>
+
+
+
+
+    <% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+    
+    <nav class="navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <!--<a class="navbar-brand" href="#">Punto de Venta</a>-->
+    <%= link_to "Punto de Venta - Administrador", root_path, :class => "navbar-brand"%>
+    
+  </div>
+
+ 
+    <ul class="nav navbar-nav navbar-right">
+      <li><%= link_to 'Ventas', ventas_path%></li>
+      <li><%= link_to 'Entradas', entradas_path, method: :get %></li>
+      <li><%= link_to 'Articulos', articulos_path, method: :get%></li>
+      <li><%= link_to 'Log out', destroy_user_session_path, method: :delete %></li>
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+
+
+
+<!--SI EL USUARIO ES CAJERO-->
+<% elsif current_user and current_user.email != "jonatan.orc@gmail.com"%>
+    <nav class="navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <!--<a class="navbar-brand" href="#">Punto de Venta</a>-->
+    <%= link_to "Punto de Venta - Cajero", root_path, :class => "navbar-brand"%>
+  </div>
+
+ 
+    <ul class="nav navbar-nav navbar-right">
+      <li><%= link_to 'Caja', cajas_path %></li>
+      <li><%= link_to 'Entradas', entradas_path, method: :get %></li>
+      <li><%= link_to 'Articulos', articulos_path, method: :get%></li>
+      <li><%= link_to 'Log out', destroy_user_session_path, method: :delete %></li>
+      
+    </ul>
+  </div><!-- /.navbar-collapse -->
+</nav>
+
+<% else %>
+    
+<% end %>
+
+
+
+
+
+
+<%= yield %>
+  </body>
+</html>

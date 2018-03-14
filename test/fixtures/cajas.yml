@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id_venta: 1
+  cantidad: 1
+  nombre: MyString
+  precio: 9.99
+  importe: 9.99
+
+two:
+  id_venta: 1
+  cantidad: 1
+  nombre: MyString
+  precio: 9.99
+  importe: 9.99

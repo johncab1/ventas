@@ -1,0 +1,10 @@
+<% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+<center>
+<h1>New Articulo</h1>
+
+<%= render 'form', articulo: @articulo %>
+
+<%= link_to 'Back', articulos_path %>
+</center>
+
+<% end %>

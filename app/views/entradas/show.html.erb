@@ -1,0 +1,30 @@
+
+<% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+<center>
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Nombre:</strong>
+  <%= @entrada.nombre %>
+</p>
+
+<p>
+  <strong>Unidad:</strong>
+  <%= @entrada.unidad %>
+</p>
+
+<p>
+  <strong>Precio:</strong>
+  <%= @entrada.precio %>
+</p>
+
+<p>
+  <strong>Cantidad:</strong>
+  <%= @entrada.cantidad %>
+</p>
+
+<%= link_to 'Editar', edit_entrada_path(@entrada) %> |
+<%= link_to 'Regresar', entradas_path %>
+</center>
+
+<% end %>

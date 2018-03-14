@@ -1,0 +1,47 @@
+<script type="text/javascript">
+  $(document).ready(function(){
+  $('#entrada_nombre').autocomplete({
+    minLength: 2,
+  source: $('#entrada_nombre').data('autocomplete-source')
+});
+});
+</script>
+<center>
+<%= form_for(entrada) do |f| %>
+  <% if entrada.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(entrada.errors.count, "error") %> prohibited this entrada from being saved:</h2>
+
+      <ul>
+      <% entrada.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= f.label :nombre %>
+    <%= f.text_field :nombre , data: {autocomplete_source: Articulo.all.order(:nombre).map(&:nombre)}%>
+  </div>
+
+  <!--<div class="field">
+    <%= f.label :unidad %>
+    <%= f.text_field :unidad %>
+  </div>
+
+  <div class="field">
+    <%= f.label :precio %>
+    <%= f.text_field :precio %>
+  </div>-->
+
+  <div class="field">
+    <%= f.label :cantidad %>
+    <%= f.number_field :cantidad %>
+  </div>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
+</center>

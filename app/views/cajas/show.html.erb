@@ -1,0 +1,30 @@
+<% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+<center>
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Monto:</strong>
+  <%= @venta.monto %>
+</p>
+
+
+<p>
+<strong>Productos vendidos: </strong>
+<%- @venta.solds.each do |vendido| %>
+	<%- @nombre = vendido.nombre %><br>
+	<%= @nombre %>
+<% end %>
+</p>
+
+
+<p>
+  <strong>Fecha:</strong>
+  <%= @venta.created_at.to_formatted_s(:db) %>
+</p>
+
+
+
+<%= link_to 'Back', ventas_path %>
+</center>
+
+<% end %>

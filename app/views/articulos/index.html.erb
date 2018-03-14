@@ -1,0 +1,82 @@
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/zf-5.5.2/jq-2.2.4/dt-1.10.13/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/zf-5.5.2/jq-2.2.4/dt-1.10.13/datatables.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#articles-table').dataTable({ 
+
+          "sPaginationType": "full_numbers",
+          
+          retrieve: true
+
+          
+
+        });      
+});
+</script>
+
+<% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+<h1>Articulos</h1>
+<%= link_to 'Nuevo Articulo', new_articulo_path %>
+<center>
+<p id="notice"><%= notice %></p>
+
+
+
+<table id="articles-table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Unidad</th>
+      <th>Precio</th>
+      <th>Operaciones</th>
+    </tr>
+  </thead>
+
+  
+    <% @articulos.each do |articulo| %>
+      <tr>
+        <td><%= articulo.nombre %></td>
+        <td><%= articulo.unidad %></td>
+        <td><%= articulo.precio %></td>
+        <td>&nbsp;&nbsp;<%= link_to 'Editar', edit_articulo_path(articulo) %>&nbsp;&nbsp;<%= link_to 'Eliminar', articulo, method: :delete, data: { confirm: '¿Esta seguro de elimnar este registro?' } %></td>
+        
+      </tr>
+    <% end %>
+  
+</table>
+</center> 
+<br>
+
+
+<% elsif current_user and current_user.email != "jonatan.orc@gmail.com"%>
+
+  <h1>Articulos</h1>
+
+<center>
+<p id="notice"><%= notice %></p>
+
+
+
+<table id="articles-table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Unidad</th>
+      <th>Precio</th>
+    </tr>
+  </thead>
+
+  
+    <% @articulos.each do |articulo| %>
+      <tr>
+        <td><%= articulo.nombre %></td>
+        <td><%= articulo.unidad %></td>
+        <td><%= articulo.precio %></td>        
+      </tr>
+    <% end %>
+  
+</table>
+</center>
+
+<% end %>

@@ -1,0 +1,91 @@
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/zf-5.5.2/jq-2.2.4/dt-1.10.13/datatables.min.css"/>
+<script type="text/javascript" src="https://cdn.datatables.net/v/zf-5.5.2/jq-2.2.4/dt-1.10.13/datatables.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#entradas-table').dataTable({
+
+          "sPaginationType": "full_numbers",
+          
+          retrieve: true
+
+          
+
+        });      
+});
+</script>
+
+<% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+<h1>Entradas</h1>
+<%= link_to 'Nueva entrada', new_entrada_path %>
+<center>
+<p id="notice"><%= notice %></p>
+
+<table id="entradas-table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Unidad</th>
+      <th>Precio</th>
+      <th>Cantidad</th>
+      <th>Operaciones</th>
+    </tr>
+  </thead>
+
+  
+    <% @entradas.each do |entrada| %>
+      <tr>
+        <td><%= entrada.nombre %></td>
+        <td><%= entrada.unidad %></td>
+        <td><%= entrada.precio %></td>
+        <td><%= entrada.cantidad %></td>
+        <!--<td><%= link_to 'Ver', entrada %></td>-->
+        <td><%= link_to 'Editar', edit_entrada_path(entrada) %>&nbsp;&nbsp;
+        <%= link_to 'Eliminar', entrada, method: :delete, data: { confirm: '¿Esta seguro de eliminar el registro?' } %></td>
+      </tr>
+    <% end %>
+  
+</table>
+
+<br>
+
+
+</center>
+
+
+<%elsif current_user and current_user.email != "jonatan.orc@gmail.com"%>
+  <h1>Entradas</h1>
+
+<center>
+<p id="notice"><%= notice %></p>
+
+<table id="entradas-table">
+  <thead>
+    <tr>
+      <th>Nombre</th>
+      <th>Unidad</th>
+      <th>Precio</th>
+      <th>Cantidad</th>
+      
+    </tr>
+  </thead>
+
+  
+    <% @entradas.each do |entrada| %>
+      <tr>
+        <td><%= entrada.nombre %></td>
+        <td><%= entrada.unidad %></td>
+        <td><%= entrada.precio %></td>
+        <td><%= entrada.cantidad %></td>
+        
+      </tr>
+    <% end %>
+  
+</table>
+
+<br>
+
+
+</center>
+
+<% end %>

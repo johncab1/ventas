@@ -1,0 +1,12 @@
+
+<% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+<center>
+<h1>Nueva Entrada</h1>
+
+<%= render 'form', entrada: @entrada %>
+
+<%= link_to 'Regresar', entradas_path %>
+</center>
+
+
+<% end %>

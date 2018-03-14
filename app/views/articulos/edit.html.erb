@@ -1,0 +1,11 @@
+<% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+<center>
+<h1>Editar Articulo</h1>
+
+<%= render 'form', articulo: @articulo %>
+
+<!--<%= link_to 'Show', @articulo %> |-->
+<%= link_to 'Regresar', articulos_path %>
+</center>
+
+<% end %>

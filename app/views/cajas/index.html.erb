@@ -1,0 +1,264 @@
+<% if current_user and current_user.email == "jonatan.orc@gmail.com" %>
+<p>Acceso no permitido</O>
+
+<% elsif current_user and current_user.email != "jonatan.orc@gmail.com"%>
+<script type="text/javascript" defer>
+  $(document).ready(function(){
+  $('#cajas_nombre').autocomplete({
+    minLength: 2,
+  source: $('#cajas_nombre').data("autocomplete-source")
+});
+  //ocultando el form de cobrar
+  $("#mostrar-pago").hide();
+  $("#cobrar-div").hide();
+
+  $("#mostrar-pago").click(function(e){
+      $("#cobrar-div").show();
+      //aqui se va a obtener los valores de nombre y cantidades de la tabla
+      var products = $("#hide_productos").val();
+      var quantity = $("#hide_cantidades").val();
+
+       $("#list-articulos .nombre").each(function (index) 
+        { 
+            products = products + $(this).text() + ",";
+            $("#hide_productos").attr("value", products);
+        });
+
+       $("#list-articulos .cantidad").each(function (index){
+          quantity = quantity + $(this).text() + ",";
+          $("#hide_cantidades").attr("value", quantity);
+       });
+       var gran_total = $("#total").text();
+       $("#cantidad_total").attr("value", gran_total);
+       //alert($("#cantidad_total").val());
+       //alert($("#hide_productos").val());
+       //alert($("#hide_cantidades").val());
+  });
+});
+</script>
+
+
+
+<%= javascript_tag :defer do %>
+
+   $(document).ready(function(){
+   var total = parseFloat(0);
+$( "#cajas_nombre" ).keyup(function(e) {
+  
+	if(e.which == 13)
+	{
+  		name = $("#cajas_nombre").val();
+  		var jsondata = <%=raw Entrada.all.to_json %>;
+
+  		for(var i = 0; i < jsondata.length; i++ )
+  		{
+
+  			if(jsondata[i].nombre == name)
+  			{
+
+  				//alert('id: ' + jsondata[i].id + ' es nombre: ' + jsondata[i].nombre + ' su precio es' + jsondata[i].precio);
+          if(jsondata[i].cantidad > 0)
+          {
+  				  var row = $("<tr />");
+  				  $("<td />").html("<label contenteditable='true' class='cantidad'>1</label>").appendTo(row);
+  				  $("<td />").html("<label class='nombre'>" +jsondata[i].nombre +"</label>").appendTo(row);
+  				  $("<td />").html("<label class='precio'>" +parseFloat(jsondata[i].precio).toFixed(2) +"</label>").appendTo(row);
+  				  $("<td />").html("<label class='importe'>" +parseFloat(jsondata[i].precio).toFixed(2) +"</label>").appendTo(row);
+  				  $("<td />").html("<input type='button' class='borrar' value='Eliminar' />").appendTo(row);
+  				  row.appendTo("#list-articulos");
+  				  $("#cajas_nombre").val("");
+  				  //var children = $("tr td")[0].innerText;
+  				  //alert(children);
+
+            //sumando el total despues de seleccionar un articulo
+            total = total + parseFloat(jsondata[i].precio);
+            $("#total").text(total.toFixed(2));
+            $("#mostrar-pago").show();
+            $("#monto").trigger("keyup");
+          }
+
+          else
+          {
+            alert("Ya no hay existencia de este articulo");
+            $("#cajas_nombre").val("");
+          }
+  				
+  			}
+  		
+  		}
+	}
+
+});
+
+
+$(document).on('click', '.borrar', function (event) {
+    //restando el precio del total
+    event.preventDefault();
+    var importe = parseFloat($(this).closest('tr').find('.importe').text());
+    total = total - importe;
+    $("#total").text(total.toFixed(2));
+
+    //eliminando la fila
+    
+    $(this).closest('tr').remove();
+    //retirando el formulario de cobro si el total es igual a 0
+    if(total == 0)
+    {
+      $("#mostrar-pago").hide();  
+      $("#cobrar-div").hide();
+    }
+});
+
+
+$(document).on('keyup', '.cantidad', function (event) {
+    
+    if(event.which == 48 || event.which == 49 || event.which == 50 || event.which == 51 || event.which == 52 || event.which == 53 || event.which == 54 || event.which == 55 || event.which == 56 || event.which == 57)
+    {
+
+    
+    //alert($(this).closest('tr').find('.nombre').text());
+    //preparando los selectores
+    var nombre = $(this).closest('tr').find('.nombre').text();
+    var cantidad = $(this).closest('tr').find('.cantidad').text();
+    var precio = $(this).closest('tr').find('.precio').text();
+    var importe = $(this).closest('tr').find('.importe').text();
+    var jsondata = <%=raw Entrada.all.to_json %>;
+    
+
+    //recorriendo el array json
+    for(var i = 0; i < jsondata.length; i++ )
+    {
+      //si la cantidad esta dentro del rango de existencia
+      if(nombre == jsondata[i].nombre && cantidad <= jsondata[i].cantidad)
+      {
+        //primero restar el precio la unidad
+        total = total - importe;
+        importe = parseFloat(cantidad * precio);
+        $(this).closest('tr').find('.importe').text(importe.toFixed(2));
+        total = total + importe;
+        $("#total").text(total.toFixed(2));
+        
+        
+      }
+      //si la cantidad no esta dentro del rango de la existencia
+      else if(nombre == jsondata[i].nombre && cantidad > jsondata[i].cantidad)
+      {
+        //avisando que ha sobrepasado la cantidad de existencia y poniendo el maximo y calculando el importe y total
+        alert("solo hay " + jsondata[i].cantidad + " de existencia.");
+        $(this).closest('tr').find('.cantidad').text(jsondata[i].cantidad);
+        cantidad = $(this).closest('tr').find('.cantidad').text();
+
+        total = total - importe;
+        importe = parseFloat(cantidad * precio);
+        $(this).closest('tr').find('.importe').text(importe.toFixed(2));
+        total = total + importe;
+        $("#total").text(total.toFixed(2));
+      }
+    }
+    }
+
+    else
+    {
+
+    }
+
+});
+
+});   
+<% end %>
+
+
+  
+<%=javascript_tag :defer do%>
+  $(document).ready(function(){
+    $( "#monto" ).keyup(function(e) {
+      var monto_total = parseFloat($("#total").text());
+      var monto_pagado = parseFloat($("#monto").val());
+      var cambio = 0;
+
+      if(isNaN(monto_pagado) == false)
+      {
+        cambio = parseFloat(monto_pagado - monto_total);
+        //verificando si la cantidad del monto pagado es valida
+        if(cambio == 0 || cambio > 0)
+        {
+          $("#cambio").text(cambio.toFixed(2) + " Gracias!");
+          //obteniendo l
+        }
+
+        else
+        {
+          $("#cambio").text("Monto inválido");
+        }
+      }
+
+      else
+      {
+        $("#cambio").text("Monto inválido");
+      }
+
+    });
+  });
+<% end %>
+
+
+
+
+
+
+<%= form_for :cajas, :url =>{:action => "cobrar"}  do |f|%>
+  
+    <p>
+        <!--<%= f.label :nombre%><br>-->
+        <%= f.text_field :nombre,:size => 50, :placeholder => "Escriba el nombre del articulo", data: {autocomplete_source: Entrada.all.order(:nombre).map(&:nombre)} %>
+      </p>
+
+      <table id="list-articulos">
+  <thead>
+    <tr>
+      <th>Cantidad</th>
+      <th>Nombre</th>
+      <th>Precio</th>
+      <th>Importe</th>
+      <th>Opciones</th>
+    </tr>
+  </thead>
+
+  </table>
+  <br><br><br><br>
+  <%= f.label :total%>
+  &nbsp;&nbsp;&nbsp;
+  <%= f.label :_0, :id => "total"%><br>
+  <br>
+  <input type="button" id="mostrar-pago" value="cobrar">
+  <div id="cobrar-div">
+    Recibe <%=f.text_field :recibe, :id => "monto"%><br>    
+    Su cambio&nbsp;<label id="cambio">0.0</label>
+    <%=f.hidden_field :monto, :id => "cantidad_total", :value => ""%>
+    <%=f.hidden_field :productos, :id => "hide_productos", :value => "" %>
+    <%=f.hidden_field :cantidades, :id => "hide_cantidades", :value => "" %><br>
+    <%= f.submit :aceptar, :size => 30 %> 
+
+  </div>
+      <!--<p>
+        <%= f.label :cantidad %><br>
+        <%= f.number_field :cantidad, :size => 25, :required => "true" %>
+      </p>
+
+      <p>
+        <%= f.label :precio %><br>
+        <%= f.text_field :precio, :size => 25, :required => "true", data: {complete: 'product'} %>
+      </p>
+
+      <p>
+        <%= f.label :importe %><br>
+        <%= f.text_field :importe, :size => 25, :required => "true" %>
+      </p>-->
+
+
+
+
+
+    
+<% end %>
+<% end %>
